@@ -46,6 +46,48 @@ class Grammar {
       finalStates
     );
   }
+
+  classifyGrammar() {
+    let isType3 = true;
+    let isType2 = true;
+    let isType1 = true;
+
+    for (let [left, right] of Object.entries(this.P)) {
+      for (let rule of right) {
+        // Check for Type 3 (Regular Grammar)
+        if (
+          !(
+            (
+              /^[a-z]?[A-Z]?$/.test(rule) || // Right-linear: aB or a
+              /^[A-Z]?[a-z]?$/.test(rule)
+            ) // Left-linear: Ba or a
+          )
+        ) {
+          isType3 = false;
+        }
+
+        // Check for Type 2 (Context-Free Grammar)
+        if (!/^[A-Z]→.+$/.test(`${left}→${rule}`)) {
+          isType2 = false;
+        }
+
+        // Check for Type 1 (Context-Sensitive Grammar)
+        if (rule.length < left.length) {
+          isType1 = false;
+        }
+      }
+    }
+
+    if (isType3) {
+      return "Type 3 (Regular Grammar)";
+    } else if (isType2) {
+      return "Type 2 (Context-Free Grammar)";
+    } else if (isType1) {
+      return "Type 1 (Context-Sensitive Grammar)";
+    } else {
+      return "Type 0 (Unrestricted Grammar)";
+    }
+  }
 }
 
 class FiniteAutomaton {
@@ -95,3 +137,7 @@ console.log(
   "Does 'dba' belong to the language?",
   automaton.stringBelongToLanguage("dba")
 );
+
+// for lab 2
+// classify a grammar based on the Chomsky hierarchy - determine whether it is Type 0, Type 1, Type 2, or Type 3
+console.log("Grammar Classification:", grammar.classifyGrammar());

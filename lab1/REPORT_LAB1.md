@@ -37,12 +37,6 @@ The `Grammar` class represents the formal grammar with **non-terminals, terminal
 
 ```javascript
 class Grammar {
-  constructor(nonTerminals, terminals, productions, startSymbol) {
-    this.V_n = nonTerminals;
-    this.V_t = terminals;
-    this.P = productions;
-    this.S = startSymbol;
-  }
   generateString() {
     let current = this.S;
     let result = "";
@@ -68,13 +62,6 @@ The `FiniteAutomaton` class converts the grammar into an FA and checks whether a
 
 ```javascript
 class FiniteAutomaton {
-  constructor(states, alphabet, transitions, startState, finalStates) {
-    this.Q = states;
-    this.Sigma = alphabet;
-    this.delta = transitions;
-    this.q0 = startState;
-    this.F = finalStates;
-  }
   stringBelongToLanguage(inputString) {
     let currentState = this.q0;
     for (let symbol of inputString) {
@@ -86,34 +73,6 @@ class FiniteAutomaton {
     return this.F.has(currentState);
   }
 }
-```
-
-### **Main Execution**
-
-The main function initializes the grammar and automaton and tests them with sample inputs.
-
-```javascript
-const grammar = new Grammar(
-  ["S", "A", "B"],
-  ["a", "b", "c", "d"],
-  { S: ["bS", "dA"], A: ["aA", "dB", "b"], B: ["cB", "a"] },
-  "S"
-);
-
-console.log("Generated strings:");
-for (let i = 0; i < 5; i++) {
-  console.log(grammar.generateString());
-}
-
-const automaton = grammar.toFiniteAutomaton();
-console.log(
-  "Does 'ba' belong to the language?",
-  automaton.stringBelongToLanguage("ba")
-);
-console.log(
-  "Does 'dba' belong to the language?",
-  automaton.stringBelongToLanguage("dba")
-);
 ```
 
 ## **Conclusions & Results**
