@@ -14,6 +14,7 @@ Automata are therefore categorized as either deterministic (DFA) or non-determin
 
 ## Objectives
 
+<<<<<<< HEAD
 
 
 1. **Understand what an automaton is and what it can be used for.**  
@@ -58,6 +59,37 @@ constructor(states, alphabet, transitions, startState, finalStates) {
 ### **toRegularGrammar() method**
 
 This method converts the FA into a regular grammar (a set of rules for generating the same language as the FA).
+=======
+1. **Understand what an automaton is and what it can be used for.**
+
+2. **Continuing the work in the same repository and the same project, the following need to be added:**
+
+   - a. Provide a function in your grammar type/class that could classify the grammar based on Chomsky hierarchy.
+   - b. For this, you can use the variant from the previous lab.
+
+3. **According to your variant number (by universal convention it is register ID), get the finite automaton definition and do the following tasks:**
+   - a. Implement conversion of a finite automaton to a regular grammar.
+   - b. Determine whether your FA is deterministic or non-deterministic.
+   - c. Implement some functionality that would convert an NDFA to a DFA.
+   - d. Represent the finite automaton graphically _(Optional, and can be considered as a bonus point)_:
+     - You can use external libraries, tools, or APIs to generate the figures/diagrams.
+     - Your program needs to gather and send the data about the automaton, and the library/tool/API returns the visual representation.
+
+## Implementation Description
+
+### **toRegularGrammar() method**
+
+This method converts a **Finite Automaton (FA)** into a **Regular Grammar**. A regular grammar is a set of production rules that describe the same language as the FA. The method works by iterating through each state and mapping transitions into corresponding grammar rules.
+
+#### **How it Works:**
+
+1. **Initialize an empty grammar**: A dictionary (`grammar`) where each key represents a state, and its value is a list of production rules.
+2. **Iterate through states**: For each state, check the possible transitions defined by the FA.
+3. **Generate production rules**:
+   - If a state transitions to another state on an input symbol, a rule of the form `symbolNextState` is added.
+   - If the state is a final state, it also generates an **ε-rule**, allowing the grammar to produce an empty string.
+4. **Return the grammar**: The final dictionary contains a complete set of production rules equivalent to the FA.
+>>>>>>> lab1
 
 ```javascript
 toRegularGrammar() {
@@ -80,7 +112,18 @@ toRegularGrammar() {
 
 ### **isDeterministic() method**
 
+<<<<<<< HEAD
 This method checks if the automaton is deterministic (DFA) or non-deterministic (NDFA).
+=======
+This method checks whether the FA is **deterministic (DFA)** or **non-deterministic (NDFA)**.
+
+### **How it Works:**
+
+1. **Iterate through each state** in the FA.
+2. **Check transitions for each symbol** in the alphabet:
+   - If a state has **more than one transition for the same input symbol**, it means multiple states can be reached, indicating **non-determinism**.
+3. **Return `false` if any state is non-deterministic**, otherwise return `true`.
+>>>>>>> lab1
 
 ```javascript
 isDeterministic() {
@@ -98,7 +141,23 @@ isDeterministic() {
 
 ### **toDFA() method**
 
+<<<<<<< HEAD
 This method eliminates non-determinism by grouping sets of states into single states.
+=======
+This method **converts a Non-Deterministic Finite Automaton (NDFA) to a Deterministic Finite Automaton (DFA)** using the **subset construction algorithm**.
+
+#### **How it Works:**
+
+1. **Create the initial DFA state**, which is a set containing only the start state.
+2. **Use a queue to process each DFA state**:
+   - Track which states have been processed.
+   - Each DFA state is actually a **set of original NDFA states**.
+3. **Iterate through input symbols**:
+   - Collect all possible states the FA can transition to using a given symbol.
+   - If this set of states is new, add it to the DFA's states list.
+4. **Mark final states**: Any DFA state that contains at least one final NDFA state is marked as a final state in the DFA.
+5. **Return the newly constructed DFA**, represented as a new `FiniteAutomaton` instance.
+>>>>>>> lab1
 
 ```javascript
 toDFA() {
@@ -148,13 +207,19 @@ toDFA() {
 
 ## **Conclusions & Results**
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> lab1
 - **Regular grammar conversion** ensures that the FA's behavior can be expressed as production rules.
 - **Determinism check** helps classify the FA as either **deterministic (DFA)** or **non-deterministic (NDFA)**.
 - **NDFA to DFA conversion** eliminates non-determinism by **grouping states** into single DFA states.
 - The program demonstrates **core automata theory principles**, making it useful for **academic and practical applications**.
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> lab1
 ### **Sample Output:**
 
 ```
@@ -170,7 +235,10 @@ DFA Transitions:
 {
   '["q0"]': { a: '["q1"]', b: '["q0"]' },
   '["q1"]': { a: '[]', b: '["q1","q2"]' },
+<<<<<<< HEAD
   '[]': { a: '[]', b: '[]' },
+=======
+>>>>>>> lab1
   '["q1","q2"]': { a: '["q2"]', b: '["q1","q2","q3"]' },
   '["q2"]': { a: '["q2"]', b: '["q3"]' },
   '["q1","q2","q3"]': { a: '["q2"]', b: '["q1","q2","q3"]' },
