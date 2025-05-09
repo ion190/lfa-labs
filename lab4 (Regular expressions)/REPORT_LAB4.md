@@ -33,11 +33,44 @@ Regular expressions (regex) are sequences of characters that define search patte
 
 This function breaks down a regex string into manageable components (groups or literals) along with their quantifiers (\*, +, {n}).
 
-#### **How it Works:**
+### How it Works:
 
-1. **Initialization:** An empty array components stores parsed elements. A pointer pos tracks the current position in the regex string.
-2. **Handling Groups (a|b|c):** When encountering (, it finds the matching ) by tracking nested parentheses. Extracts the group content (e.g., S|T from (S|T)). Checks for a following quantifier (\*, +, {n}) and stores it.
-3. **Handling Literals (Non-Group Characters):** Collects characters until a (, \*, +, or { is found. If a quantifier follows, it captures and stores it.
+The parsing mechanism converts a simplified regex-like string into a structured format that can later be interpreted or transformed. This is achieved through a step-by-step scan of the input string using a position pointer and a dynamic list of components.
+
+1. **Initialization**
+
+   - An empty array `components` is created to store the parsed elements.
+   - A pointer variable `pos` is initialized at 0 and used to traverse the regex string character by character.
+   - As the string is parsed, each recognized element (group, literal, or quantifier) is converted into a structured object or dictionary and pushed into the `components` array.
+
+2. **Handling Groups (e.g., `(a|b|c)`)**
+
+   - When an opening parenthesis `(` is encountered, it signals the start of a group.
+   - The parser searches forward to find the corresponding closing `)` by tracking nested parentheses to ensure proper matching even within nested structures.
+   - Once matched, the content inside the parentheses (e.g., `a|b|c`) is extracted and split by the pipe `|` character to create an array of options: `['a', 'b', 'c']`.
+   - After the closing `)`, the parser checks if a quantifier (like `*`, `+`, `{n}`, or `{n,m}`) immediately follows the group. If found, the quantifier is parsed and associated with the group.
+   - The resulting group object is added to the `components` list with properties like `type: 'group'`, `options`, and `quantifier`.
+
+3. **Handling Literals (Non-Group Characters)**
+
+   - If the current character is not part of a group (i.e., not `(`), it is treated as a literal.
+   - The parser collects consecutive literal characters until it encounters a control character such as `(`, `*`, `+`, or `{`, which signals the end of the literal sequence or the beginning of a quantifier.
+   - If a quantifier follows the literal sequence, it is parsed and attached to the literal component.
+   - The completed literal is stored in the `components` list as an object with fields like `type: 'literal'`, `value`, and optional `quantifier`.
+
+4. **Quantifier Parsing**
+
+   - Quantifiers define how many times a component should be repeated.
+   - The parser supports standard quantifiers such as:
+     - `*` (zero or more)
+     - `+` (one or more)
+     - `{n}` (exactly n times)
+     - `{n,m}` (between n and m times)
+   - These are normalized into a consistent internal representation (e.g., `min`, `max`) for later interpretation or generation.
+
+5. **Building the Final Structure**
+   - After traversing the entire string, the `components` array contains a structured representation of the input pattern.
+   - This structure can then be used for string generation, validation, or transformation based on custom logic.
 
 ```javascript
 function parseRegex(regex) {
@@ -47,23 +80,6 @@ function parseRegex(regex) {
     if (regex[pos] === "(") {
       let depth = 1;
       let end = pos + 1;
-      while (end < regex.length && depth > 0) {
-        if (regex[end] === "(") depth++;
-        else if (regex[end] === ")") depth--;
-        end++;
-      }
-      let groupContent = regex.substring(pos + 1, end - 1);
-      let quantifier = "";
-      if (end < regex.length && "*+{".includes(regex[end])) {
-        if (regex[end] === "{") {
-          let braceEnd = regex.indexOf("}", end);
-          quantifier = regex.substring(end, braceEnd + 1);
-          end = braceEnd + 1;
-        } else {
-          quantifier = regex[end];
-          end++;
-        }
-      }
       components.push({
         type: "group",
         content: groupContent,
@@ -82,9 +98,6 @@ function parseRegex(regex) {
           let braceEnd = regex.indexOf("}", literalEnd);
           quantifier = regex.substring(literalEnd, braceEnd + 1);
           literalEnd = braceEnd + 1;
-        } else {
-          quantifier = regex[literalEnd];
-          literalEnd++;
         }
       }
       components.push({
@@ -103,11 +116,21 @@ function parseRegex(regex) {
 
 This function constructs a string by processing parsed components.
 
-#### **How it Works:**
+### How it Works:
 
-1. Iterates over each component.
-2. **For groups (S|T):** Splits options (['S', 'T']). Randomly selects one per repetition.
-3. **For literals (w\*):** Repeats the character based on getRepetitions().
+The system processes a pattern-based structure by iterating over each defined component, interpreting and transforming them into a final output based on their type and behavior rules.
+
+1. **Component Iteration**  
+   The pattern is broken down into individual components. Each component is processed sequentially, with its specific rules determining how it contributes to the final result.
+
+2. **Group Handling (e.g., `(S|T)`)**  
+   When a component is a group with multiple options separated by a pipe symbol (`|`), such as `(S|T)`, it is treated as a set of possible values. The group is first split into its individual options, e.g., `['S', 'T']`, and then one of these options is randomly selected for each occurrence. This introduces controlled randomness, allowing for dynamic variation in the output.
+
+3. **Literal Repetition (e.g., `w*`)**  
+   If a component is a literal character followed by an asterisk (e.g., `w*`), it indicates that the character should be repeated. The number of repetitions is determined by the `getRepetitions()` function, which typically returns a random or rule-based integer. For example, `w*` might expand to `www` if `getRepetitions()` returns 3.
+
+4. **Combining Results**  
+   After each component is processed according to its type, the resulting strings are concatenated to form the complete final output.
 
 ```javascript
 function generateString(components) {

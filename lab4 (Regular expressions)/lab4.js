@@ -113,7 +113,7 @@ function generateWithSteps(components) {
 }
 
 // usage:
-const regex = "(S|T)(u|v)w*y+24";
+const regex = "R*S(T|U|V)W(X|Y|Z)2";
 const components = parseRegex(regex);
 console.log(generateString(components));
 

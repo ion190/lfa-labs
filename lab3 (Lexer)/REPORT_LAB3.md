@@ -130,9 +130,7 @@ This method handles the recognition and tokenization of symbols like operators a
 
 ```javascript
 tokenizeSymbol() {
-    // Tokenize symbols such as operators and punctuation
     const ch = this.advance();
-    // Check for multi-character operators (>=, <=)
     if (
       (ch === ">" || ch === "<" || ch === "=" || ch === "!") &&
       this.peek() === "="
